@@ -61,14 +61,9 @@ def login_register(request):
     return HttpResponse(template.render(context, request))
 
 def creditcard(request):
-
     template = loader.get_template('home/creditcard.html')
-
     context = {}
-
     if request.method == 'POST':
-
-
         if request.POST['submit_payment'] == "submit_payment":
             conn = pymysql.connect(host='localhost', port=3306, user='root', passwd='', db='grocery_store')
             cur = conn.cursor()
@@ -102,6 +97,7 @@ def creditcard(request):
                 CardZipcode = "'" + CardZipcode + "'"
             except ValueError:
                 pass  # it was a string, not an int.
+
 #            query = "DROP Table if exists Payments;"
             query = "INSERT INTO Payments (Credit_Card_Number, CSV, Expiration_Date, Name_on_Card, Card_Zipcode) VALUES (" + CreditCardNumber + ", " + CSV+ ", " + ExpirationDate + ", " + NameOnCard + ", " + CardZipcode + ")"
             try:
@@ -116,61 +112,17 @@ def creditcard(request):
 
             items = [];
             i = 0
-            cur.execute("SELECT * FROM payments")
+            cur.execute("SELECT * FROM Payments")
             for row in cur.fetchall():
                 items.append(("name" + str(i), str(row[4])))
                 i = i + 1
             context = dict(items)
-            return HttpResponse(template.render(context, request))
+            #return HttpResponse(template.render(context, request))
 
-        return HttpResponse("hello post from inside method")
+            return HttpResponse("hello post from inside method")
     elif request.method == 'GET':
         return HttpResponse(template.render(context, request))
-
-
-    # conn = pymysql.connect(host='localhost', port=3306, user='root', passwd='', db='grocery_store')
-    # cur = conn.cursor()
-    #
-    # CreditCardNumber = request.POST['Credit_Card_Number'][0]
-    # CreditCardNumber = "'"+int[CreditCardNumber]+"'"
-    #
-    # CSV = request.POST.get['CSV']
-    # CSV = "'"+int(CSV)+"'"
-    #
-    # ExpirationDate = request.POST.get['Expiration_Date']
-    # ExpirationDate = "'"+int(ExpirationDate)+"'"
-    #
-    # NameOnCard = request.POST.get['NameOnCard']
-    # NameOnCard = "'"+str(NameOnCard)+"'"
-    #
-    # CardZipcode = request.POST.get['Card_Zipcode']
-    # CardZipcode = "'"+int(CardZipcode)+"'"
-    #
-    # print ("CreditCardNumber: ", CreditCardNumber , "CSV: ", CVS,"ExpirationDate: ", ExpirationDate," NameOnCard: ", NameOnCard,"CardZipcode: ", CardZipcode)
-    #
-    # #query = 'SELECT payment  FROM Payment where email = "' + str(username) +  '" AND password = "' + str(password) + '"'
-    # query = "INSERT INTO Payments (Credit_Card_Number, CSV, Expiration_Date, Name_on_Card, Card_Zipcode) VALUES ( " + CreditCardNumber +","+ CSV +","+ ExpirationDate+","+ NameOnCard +","+ CardZipcode + ")"
-    # #return HttpResponse(query)
-    # try:
-    #     cur.execute(query)
-    #     conn.commit()
-    #     response = ("1",UserID)
-    #
-    #
-    # except Exception as e:
-    #     response = ("0",e)
-    #     #raise
-    # else:
-    #     pass
-    # finally:
-    #     cur.close()
-    #     conn.close()
-
-
     return response
-
-
-
 
 def confirmation(request):
     template = loader.get_template('home/confirmation.html')
@@ -178,7 +130,7 @@ def confirmation(request):
     cur = conn.cursor()
     items = [];
     i = 0
-    cur.execute("SELECT * FROM payments")
+    cur.execute("SELECT * FROM Payments")
     for row in cur.fetchall():
         item.append(("name" + str(i), str(row[4])))
         i = i + 1
